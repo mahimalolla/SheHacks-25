@@ -1,6 +1,6 @@
 // Firebase configuration
 const firebaseConfig = {
-    apiKey: "AIzaSyDVIALtgLFz90-8KMTtGsozSba9ejDABUc",
+    apiKey: "temp key",
     authDomain: "return2tech-ea0b6.firebaseapp.com",
     projectId: "return2tech-ea0b6",
     storageBucket: "return2tech-ea0b6.appspot.com", 
