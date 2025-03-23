@@ -1,14 +1,19 @@
 // Firebase configuration
+import { initializeApp } from "firebase/app";
+import { getFirestore } from 'firebase/firestore';
 const firebaseConfig = {
-    apiKey: "temp key",
-    authDomain: "return2tech-ea0b6.firebaseapp.com",
-    projectId: "return2tech-ea0b6",
-    storageBucket: "return2tech-ea0b6.appspot.com", 
-    messagingSenderId: "928356577014",
-    appId: "1:928356577014:web:01b82c3aed27af9181c6d7",
-  };
+  apiKey: process.env.FIREBASE_API,
+  authDomain: "return2tech-647cb.firebaseapp.com",
+  projectId: "return2tech-647cb",
+  storageBucket: "return2tech-647cb.firebasestorage.app",
+  messagingSenderId: "370542194318",
+  appId: "1:370542194318:web:5ce706a97f0e4c8901e3df"
+};
   
   // Initialize Firebase
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
   
+export { db };
+export default app;

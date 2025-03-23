@@ -1,0 +1,419 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <title>Simple Roadmap Cards (Side by Side)</title>
+  <style>
+    :root {
+      --primary: #5c0da3;
+      --primary-light: #8e44ed;
+      --primary-dark: #4a0984;
+      --background-light: #faf5ff;
+      --text-dark: #333;
+      --text-light: #fff;
+      --text-muted: #6b7280;
+      --border-color: rgba(147, 51, 234, 0.1);
+      --shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+      --transition: all 0.3s ease;
+    }
+
+    /* Basic resets */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    /* Black body background */
+    body {
+      background: black;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+      color: var(--text-light);
+      min-height: 100vh;
+      padding: 2rem 1rem;
+      line-height: 1.5;
+    }
+
+    /* Outer container with white background */
+    .container {
+      /* Increased max-width to 1200px for a wider layout */
+      max-width: 1200px;
+      margin: 0 auto;
+      background: #fff;
+      border-radius: 1rem;
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+
+    /* Header with gradient */
+    .header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+      padding: 2rem;
+      text-align: center;
+      color: var(--text-light);
+    }
+
+    .header h1 {
+      font-size: 2rem;
+      margin-bottom: 0.5rem;
+      font-weight: 700;
+    }
+
+    .header p {
+      opacity: 0.9;
+      font-size: 1rem;
+    }
+
+    /* Main content area now a grid */
+    .content {
+      display: grid;
+      /* Each card is at least 350px wide, then fills remaining space */
+      grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      gap: 1.5rem; /* space between cards */
+      background: var(--background-light);
+      padding: 1.5rem;
+    }
+
+    /* Intro box if GPT returns text before Week 1 */
+    .roadmap-intro {
+      grid-column: 1 / -1; /* span all columns in the grid */
+      background: #fff;
+      border-left: 6px solid var(--primary);
+      border-radius: 0.5rem;
+      padding: 1rem 1.25rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+      color: var(--text-dark);
+    }
+    .roadmap-title {
+      font-size: 1.25rem;
+      font-weight: 600;
+      margin-bottom: 0.5rem;
+    }
+
+    /* Each week card */
+    .week-card {
+      background: #fff;
+      border-radius: 0.5rem;
+      box-shadow: 0 4px 8px rgba(0,0,0,0.06);
+      border: 1px solid #f0f0f0;
+      color: var(--text-dark);
+      /* Remove bottom margin; rely on grid gap */
+      margin-bottom: 0;
+    }
+
+    /* Week header bar (no phase badge) */
+    .week-header {
+      background: linear-gradient(135deg, var(--primary), var(--primary-light));
+      color: var(--text-light);
+      padding: 1rem 1.25rem;
+      font-size: 1.1rem;
+      font-weight: 600;
+    }
+
+    /* Week content area */
+    .week-body {
+      padding: 1rem 1.25rem;
+    }
+
+    /* Labeled bullet lines */
+    .bullet-list {
+      margin: 0.75rem 0 1rem 1.25rem;
+      padding: 0;
+    }
+    .bullet-list li {
+      margin-bottom: 0.5rem;
+      list-style: none;
+      position: relative;
+      line-height: 1.4;
+    }
+    .bullet-list li::before {
+      content: '•';
+      position: absolute;
+      left: -1.25rem;
+      color: var(--primary);
+      font-weight: bold;
+    }
+    .bullet-label {
+      font-weight: 600;
+      color: var(--primary);
+      margin-right: 0.3rem;
+    }
+
+    /* Paragraph for leftover lines */
+    .week-body p {
+      margin-bottom: 0.75rem;
+      font-size: 0.95rem;
+      line-height: 1.5;
+    }
+
+    /* Footer */
+    .footer {
+      background: var(--background-light);
+      text-align: center;
+      color: var(--text-muted);
+      font-size: 0.85rem;
+      padding: 1rem;
+    }
+
+    /* Loading state */
+    .loading {
+      grid-column: 1 / -1; /* span all columns */
+      text-align: center;
+      padding: 2rem;
+    }
+    .loading-spinner {
+      display: inline-block;
+      width: 40px;
+      height: 40px;
+      border: 5px solid rgba(92, 13, 163, 0.2);
+      border-radius: 50%;
+      border-top-color: var(--primary);
+      animation: spin 1s ease-in-out infinite;
+      margin-bottom: 1rem;
+    }
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @media (max-width: 600px) {
+      .header h1 {
+        font-size: 1.5rem;
+      }
+      .week-header {
+        font-size: 1rem;
+      }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <!-- Header Section -->
+    <div class="header">
+      <h1>Your Personalized Roadmap</h1>
+      <p>Tailored path to your career success</p>
+    </div>
+
+    <!-- Main Content -->
+    <div class="content" id="roadmap">
+      <!-- The roadmap content or loading spinner will be injected here -->
+      <div class="loading">
+        <div class="loading-spinner"></div>
+        <p>Building your personalized roadmap...</p>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="footer">
+      Last updated: <span id="currentDate"></span>
+    </div>
+  </div>
+
+  <script>
+    /******************************************************
+     * 1) Known bullet headings and their label
+     *    (Add or remove items based on your GPT output)
+     ******************************************************/
+    const bulletHeadings = [
+      { prefix: 'Goal:',       label: 'Goal' },
+      { prefix: 'Duration:',   label: 'Duration' },
+      { prefix: 'Focus:',      label: 'Focus' },
+      { prefix: 'Tool:',       label: 'Tool' },
+      { prefix: 'Networking:', label: 'Networking' },
+      { prefix: 'Action Item:',label: 'Action Item' },
+      { prefix: 'Outcome:',    label: 'Outcome' },
+      { prefix: 'Recommended Course:', label: 'Recommended Course' },
+      // add more if needed
+    ];
+
+    /******************************************************
+     * 2) Clean up GPT markdown (remove #, **, etc.)
+     ******************************************************/
+    function cleanMarkdown(text) {
+      text = text.replace(/^#+\s+/gm, '');  // remove heading # symbols
+      text = text.replace(/\*\*/g, '');     // remove bold markers
+      text = text.replace(/\*/g, '');       // remove asterisks
+      return text.trim();
+    }
+
+    /******************************************************
+     * 3) Parse the text by "Week X:" and build the HTML
+     ******************************************************/
+    function formatRoadmap(roadmapText) {
+      roadmapText = cleanMarkdown(roadmapText);
+
+      // Regex to find "Week X:"
+      const weekPattern = /Week\s+(\d+):/i;
+      let weeks = [];
+      let currentWeek = null;
+      let currentLines = [];
+
+      // Split by double newlines
+      const blocks = roadmapText.split(/\n\n/);
+      let introText = '';
+      let startIndex = 0;
+
+      // If the first block doesn't contain "Week X:", treat it as an intro
+      if (!weekPattern.test(blocks[0])) {
+        introText = blocks[0];
+        startIndex = 1;
+      }
+
+      // Go through the blocks
+      for (let i = startIndex; i < blocks.length; i++) {
+        const block = blocks[i];
+        const match = block.match(weekPattern);
+        if (match) {
+          // if we have a previous week, push it
+          if (currentWeek !== null) {
+            weeks.push({
+              week: currentWeek,
+              content: currentLines.join('\n')
+            });
+          }
+          currentWeek = match[1]; // the week number
+          // remove "Week X:" from the block
+          const remainder = block.replace(weekPattern, '').trim();
+          currentLines = [remainder];
+        } else {
+          if (currentWeek !== null) {
+            currentLines.push(block);
+          }
+        }
+      }
+
+      // push the last one
+      if (currentWeek !== null) {
+        weeks.push({
+          week: currentWeek,
+          content: currentLines.join('\n')
+        });
+      }
+
+      // Build final HTML
+      let html = '';
+
+      // If we have intro text
+      if (introText) {
+        html += `
+          <div class="roadmap-intro">
+            <div class="roadmap-title">Your Career Path</div>
+            <p>${introText}</p>
+          </div>
+        `;
+      }
+
+      // Build each week's card
+      weeks.forEach(weekObj => {
+        html += buildWeekCard(weekObj);
+      });
+
+      return html;
+    }
+
+    /******************************************************
+     * 4) Build a single week's card
+     ******************************************************/
+    function buildWeekCard({ week, content }) {
+      // We turn each line into either a bullet or a paragraph
+      const lines = content.split('\n').map(l => l.trim()).filter(Boolean);
+
+      // We'll store bullet items separately
+      let bulletItems = [];
+      let paragraphs = [];
+
+      lines.forEach(line => {
+        // check if it starts with a known prefix
+        const match = bulletHeadings.find(b => line.startsWith(b.prefix));
+        if (match) {
+          // e.g. "Goal: Refresh knowledge" => bullet item
+          const text = line.replace(match.prefix, '').trim();
+          bulletItems.push({ label: match.label, text });
+        } else {
+          paragraphs.push(line);
+        }
+      });
+
+      // Build HTML
+      let weekHTML = `
+        <div class="week-card">
+          <div class="week-header">
+            Week ${week}
+          </div>
+          <div class="week-body">
+      `;
+
+      // Add paragraphs
+      paragraphs.forEach(p => {
+        weekHTML += `<p>${p}</p>`;
+      });
+
+      // Add bullet items
+      if (bulletItems.length > 0) {
+        weekHTML += `<ul class="bullet-list">`;
+        bulletItems.forEach(item => {
+          weekHTML += `
+            <li>
+              <span class="bullet-label">${item.label}:</span> 
+              ${item.text}
+            </li>
+          `;
+        });
+        weekHTML += `</ul>`;
+      }
+
+      weekHTML += `</div></div>`;
+      return weekHTML;
+    }
+
+    /******************************************************
+     * 5) Fetch from backend, insert into page
+     ******************************************************/
+    async function fetchRoadmap() {
+      const profileId = new URLSearchParams(window.location.search).get("profileId");
+      const container = document.getElementById("roadmap");
+      if (!profileId) {
+        container.innerHTML = `
+          <div class="roadmap-intro">
+            <div class="roadmap-title">Profile Not Found</div>
+            <p>Please provide a valid profile ID in the URL. Example: ?profileId=abc123</p>
+          </div>
+        `;
+        return;
+      }
+
+      try {
+        const res = await fetch(`http://localhost:3000/generate-roadmap/${profileId}`);
+        const data = await res.json();
+        if (data.success && data.roadmap) {
+          container.innerHTML = formatRoadmap(data.roadmap);
+        } else {
+          container.innerHTML = `
+            <div class="roadmap-intro">
+              <div class="roadmap-title">Error Loading Roadmap</div>
+              <p>We encountered an issue while generating your roadmap. Please try again later.</p>
+            </div>
+          `;
+        }
+      } catch (err) {
+        console.error(err);
+        container.innerHTML = `
+          <div class="roadmap-intro">
+            <div class="roadmap-title">Error Loading Roadmap</div>
+            <p>We encountered an issue while generating your roadmap. Please try again later.</p>
+          </div>
+        `;
+      }
+
+      // Update the date
+      document.getElementById("currentDate").textContent = new Date().toLocaleDateString('en-US', {
+        year: 'numeric',
+        month: 'long',
+        day: 'numeric'
+      });
+    }
+
+    // 6) Initialize
+    fetchRoadmap();
+  </script>
+</body>
+</html>
