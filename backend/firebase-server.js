@@ -1,7 +1,7 @@
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 const firebaseConfig = {
-    apiKey: "AIzaSyD1k0D2eYgDjfdra5Yw-pu-LTEInkXFo9s",
+    apiKey: "your-api-key-here",
     authDomain: "return2techhckathon.firebaseapp.com",
     projectId: "return2techhckathon",
     storageBucket: "return2techhckathon.firebasestorage.app",
